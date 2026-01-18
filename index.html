@@ -83,36 +83,6 @@
         const noBtn = document.getElementById('noBtn');
         const yesBtn = document.getElementById('yesBtn');
 
-        // Detection distance in pixels
-        const detectionDistance = 100;
-
-        // Track mouse position
-        let mouseX = 0;
-        let mouseY = 0;
-
-        document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-            checkProximity();
-        });
-
-        function checkProximity() {
-            const btnRect = noBtn.getBoundingClientRect();
-            const btnCenterX = btnRect.left + btnRect.width / 2;
-            const btnCenterY = btnRect.top + btnRect.height / 2;
-
-            // Calculate distance from mouse to button center
-            const distance = Math.sqrt(
-                Math.pow(mouseX - btnCenterX, 2) +
-                Math.pow(mouseY - btnCenterY, 2)
-            );
-
-            // If mouse is too close, move the button
-            if (distance < detectionDistance) {
-                moveButton();
-            }
-        }
-
         function moveButton() {
             const windowWidth = window.innerWidth;
             const windowHeight = window.innerHeight;
@@ -123,31 +93,19 @@
             const maxX = windowWidth - btnWidth - 20;
             const maxY = windowHeight - btnHeight - 20;
 
-            let newX, newY;
-            let attempts = 0;
-            const maxAttempts = 10;
-
-            // Try to find a position far enough from the cursor
-            do {
-                newX = Math.random() * maxX + 10;
-                newY = Math.random() * maxY + 10;
-
-                const distanceFromMouse = Math.sqrt(
-                    Math.pow(mouseX - newX, 2) +
-                    Math.pow(mouseY - newY, 2)
-                );
-
-                if (distanceFromMouse > detectionDistance * 2) {
-                    break;
-                }
-                attempts++;
-            } while (attempts < maxAttempts);
+            const newX = Math.random() * maxX + 10;
+            const newY = Math.random() * maxY + 10;
 
             // Apply the new position
             noBtn.style.position = 'fixed';
             noBtn.style.left = newX + 'px';
             noBtn.style.top = newY + 'px';
         }
+
+        // Move the button when mouse touches it
+        noBtn.addEventListener('mouseenter', () => {
+            moveButton();
+        });
 
         // Prevent clicking the No button
         noBtn.addEventListener('click', (e) => {
